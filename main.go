@@ -2,40 +2,17 @@
 package main
 
 import (
-	"api-instagram/auth"
-	"api-instagram/controllers"
-	db "api-instagram/database"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"api-instagram/config"
+	"api-instagram/db"
+	"api-instagram/internal/server"
+	"log"
 )
 
-func SetupRouter() *gin.Engine {
-	r := gin.Default()
-	client := r.Group("/api")
-	{
-		// USERS
-		client.GET("/users", auth.Auth(), controllers.GetUsers)
-		client.POST("/users/create", controllers.CreateUser)
-
-		// POSTS
-		client.GET("/posts", controllers.GetPosts)
-		client.POST("/posts/create", controllers.CreatePost)
-
-		// AUTH
-		client.POST("/auth/login", controllers.Login)
-
-		// PING
-		client.GET("/ping", func(c *gin.Context) {
-			c.String(http.StatusOK, "hello world")
-		})
-	}
-	return r
-}
-
 func main() {
-	db.ConnectDb()
+	cfg := config.NewConfig()
+	log.Println("Configuration PORT", cfg)
+	db := db.GetMySQLInstance(cfg, true)
+	s := server.NewServer(cfg, db)
 
-	r := SetupRouter()
-	r.Run(":8000")
+	s.Run()
 }
