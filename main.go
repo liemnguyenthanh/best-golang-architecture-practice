@@ -2,9 +2,8 @@
 package main
 
 import (
-	"api-instagram/auth"
-	"api-instagram/controllers"
-	db "api-instagram/database"
+	"api-instagram/app/handlers"
+	"api-instagram/db"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,19 +14,19 @@ func SetupRouter() *gin.Engine {
 	client := r.Group("/api")
 	{
 		// USERS
-		client.GET("/users", auth.Auth(), controllers.GetUsers)
-		client.POST("/users/create", controllers.CreateUser)
+		client.GET("/users", handlers.GetUsers)
+		client.POST("/users/create", handlers.CreateUser)
 
 		// POSTS
-		client.GET("/posts", controllers.GetPosts)
-		client.POST("/posts/create", controllers.CreatePost)
+		client.GET("/posts", handlers.GetPosts)
+		client.POST("/posts/create", handlers.CreatePost)
 
 		// AUTH
-		client.POST("/auth/login", controllers.Login)
+		client.POST("/auth/login", handlers.Login)
 
 		// PING
 		client.GET("/ping", func(c *gin.Context) {
-			c.String(http.StatusOK, "hello world")
+			c.String(http.StatusOK, "server is living!!!")
 		})
 	}
 	return r
