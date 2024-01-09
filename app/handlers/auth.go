@@ -4,6 +4,7 @@ import (
 	"api-instagram/app/middlewares"
 	"api-instagram/app/services"
 	"api-instagram/app/utils"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,7 @@ func Login(c *gin.Context) {
 	// Exist user
 	existUser, _ := services.FindUserByCriteria(user.Username, services.ByUsername)
 
+	fmt.Print(existUser)
 	if existUser.Id == 0 {
 		utils.RespondBadRequest(c, "username is not exist")
 		return

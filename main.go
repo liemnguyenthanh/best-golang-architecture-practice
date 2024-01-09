@@ -3,6 +3,7 @@ package main
 
 import (
 	"api-instagram/app/handlers"
+	"api-instagram/app/middlewares"
 	"api-instagram/db"
 	"net/http"
 
@@ -18,8 +19,8 @@ func SetupRouter() *gin.Engine {
 		client.POST("/users/create", handlers.CreateUser)
 
 		// POSTS
-		client.GET("/posts", handlers.GetPosts)
-		client.POST("/posts/create", handlers.CreatePost)
+		client.GET("/posts", middlewares.Auth(), handlers.GetPosts)
+		client.POST("/posts/create", middlewares.Auth(), handlers.CreatePost)
 
 		// AUTH
 		client.POST("/auth/login", handlers.Login)

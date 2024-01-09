@@ -31,11 +31,9 @@ func FindUserByCriteria(identifier string, criteria UserCriteria) (*models.Users
 		return nil, errors.New("invalid criteria")
 	}
 
-	if err := db.Instance.Table("Users").Where(condition, identifier).First(&user).Error; err != nil {
-		return nil, err
-	}
+	err := db.Instance.Table("Users").Where(condition, identifier).First(&user).Error
 
-	return &user, nil
+	return &user, err
 }
 
 func InsertUser(user *models.Users) (*models.Users, error) {

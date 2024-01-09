@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"api-instagram/app/utils"
+	"fmt"
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
@@ -53,12 +54,27 @@ func ExtractUserIdFromToken(c *gin.Context) (string, error) {
 		return "", err
 	}
 
-	user_id, ok := claims["user_id"].(string)
+	user_id, ok := claims["user_id"]
+
 	if !ok {
 		return "", err
 	}
+	// Convert the user_id to string
+	var userIDString string
 
-	return user_id, nil
+	switch v := user_id.(type) {
+	case float64:
+		// If user_id is a float (common when decoding JSON numbers), convert it to string
+		userIDString = fmt.Sprintf("%.0f", v)
+	case string:
+		// If user_id is already a string, use it as is
+		userIDString = v
+	default:
+		// Handle other types or raise an error if necessary
+		return "", fmt.Errorf("Unexpected type for user_id: %T", user_id)
+	}
+
+	return userIDString, nil
 }
 
 func GenerateToken(userID int) (*string, error) {
